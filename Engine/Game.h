@@ -23,6 +23,13 @@
 #include "Keyboard.h"
 #include "Mouse.h"
 #include "Graphics.h"
+#include "FrameTimer.h"
+#include "CoordinateTransformer.h"
+#include "Entity.h"
+#include "Camera.h"
+#include "Star.h"
+#include <random>
+#include "Strober.h"
 
 class Game
 {
@@ -38,8 +45,26 @@ private:
 	/*  User Functions              */
 	/********************************/
 private:
+	FrameTimer ft;
+	std::random_device rd;
+	std::mt19937 rng;
+	const int entNum = 300;
+	const float dist = 5000.0f;
+	const float maxRad = 200.0f;
+	std::uniform_real_distribution<float> xDist;
+	std::uniform_real_distribution<float> yDist;
+	std::uniform_real_distribution<float> inRadius;
+	std::uniform_real_distribution<float> outRadius;
+	std::uniform_int_distribution<int> points;
+	std::uniform_int_distribution<int> rgb;
+	std::uniform_real_distribution<float> strobeSpeed;
+	std::uniform_real_distribution<float> scaleFactor;
 	MainWindow& wnd;
 	Graphics gfx;
+	CoordinateTransformer ct;
+	Camera cam;
+	std::vector<Star> stars;
+	
 	/********************************/
 	/*  User Variables              */
 	/********************************/

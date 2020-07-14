@@ -71,9 +71,9 @@ public:
 		{
 			return type;
 		}
-		Vei2 GetPos() const
+		Vec2 GetPos() const
 		{
-			return{ x,y };
+			return{ float(x),float(y) };
 		}
 		int GetPosX() const
 		{
@@ -96,6 +96,7 @@ public:
 	Mouse() = default;
 	Mouse( const Mouse& ) = delete;
 	Mouse& operator=( const Mouse& ) = delete;
+	Vec2 GetPosFloat() const;
 	Vei2 GetPos() const;
 	int GetPosX() const;
 	int GetPosY() const;
