@@ -36,7 +36,7 @@ Game::Game(MainWindow& wnd)
 	points(3, 10),
 	rgb(0, 255),
 	strobeSpeed(1.0f,10.0f),
-	scaleFactor(0.3f, 0.95f)
+	scaleFactor(0.05f, 0.95f)
 {
 	stars.reserve(entNum);
 	for (int i = 0; i < entNum; ++i)
