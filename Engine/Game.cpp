@@ -91,6 +91,8 @@ void Game::UpdateModel()
 	float dt = ft.Mark();
 
 	cnt.Update();
+	
+	int test = 0;
 
 	for (auto& ent : stars)
 		ent.Strobe(dt);
