@@ -388,11 +388,17 @@ void Graphics::DrawClosedPolyline(const std::vector<Vec2>& verts, const Vec2& tr
 		return v;
 	};
 
+	const Vec2 front = transformer(*verts.begin());
+
+	Vec2 cur = front;
+
 	for (auto i = verts.begin(); i != std::prev(verts.end()); i++)
 	{
-		DrawLine(transformer (*i), transformer(*std::next(i)), c);
+		const Vec2 next = transformer(*std::next(i));
+		DrawLine(cur, next , c);
+		cur = next;
 	}
-	DrawLine(transformer(verts.back()), transformer(verts.front()), c);
+	DrawLine(cur, front, c);
 }
 
 
