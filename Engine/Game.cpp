@@ -32,9 +32,9 @@ Game::Game(MainWindow& wnd)
 	rng(rd()),
 	xDist(-dist, dist),
 	yDist(-dist, dist),
-	inRadius(5.0f, 50.0f),
+	inRadius(0.2f, 0.6f),
 	outRadius(50.0f, maxRad),
-	points(3, 10),
+	points(3, 8),
 	rgb(0, 255),
 	strobeSpeed(1.0f,10.0f),
 	scaleFactor(0.05f, 0.95f)
@@ -73,7 +73,7 @@ Game::Game(MainWindow& wnd)
 				}
 			}
 		} while (!placeable);
-		stars.emplace_back(Star::Make(inRadius_tmp, outRadius_tmp, points_tmp), Vec2(xDist_tmp, yDist_tmp), r, g, b, outRadius_tmp, strobeSpeed_tmp, scaleFactor_tmp);
+		stars.emplace_back(Star::Make(inRadius_tmp * outRadius_tmp, outRadius_tmp, points_tmp), Vec2(xDist_tmp, yDist_tmp), r, g, b, outRadius_tmp, strobeSpeed_tmp, scaleFactor_tmp);
 	}
 
 }
@@ -99,6 +99,6 @@ void Game::UpdateModel()
 void Game::ComposeFrame()
 {
 	for(const auto& ent : stars)
-		if (ent.GetPos().DistFromOtherVec2(cam.GetPos()) < gfx.ScreenLengthFromCenter / cam.GetScale() + maxRad)
+		if (ent.GetPos().DistFromOtherVec2(cam.GetPos()) < gfx.ScreenLengthFromCenter / cam.GetScale() + ent.GetRadius())
 			cam.Draw( ent.GetDrawable());
 }

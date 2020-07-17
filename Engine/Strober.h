@@ -27,7 +27,6 @@ public:
 		float scale_swing = scale_diff / 2.0f;
 
 		float scale_tmp = scale_swing * sin(time * strobeSpeed) + (scaleFactor + scale_diff);
-
 		entity.SetScale(scale_tmp);
 	}
 private:
