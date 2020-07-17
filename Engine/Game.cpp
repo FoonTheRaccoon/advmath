@@ -28,6 +28,7 @@ Game::Game(MainWindow& wnd)
 	gfx(wnd),
 	ct(gfx),
 	cam(ct),
+	cnt(wnd.mouse, cam),
 	rng(rd()),
 	xDist(-dist, dist),
 	yDist(-dist, dist),
@@ -89,37 +90,7 @@ void Game::UpdateModel()
 {
 	float dt = ft.Mark();
 
-	const float moveSpeed = 1.0f;
-	if (wnd.kbd.KeyIsPressed(VK_UP))
-	{
-		cam.MoveBy({ 0.0f,moveSpeed });
-	}
-	if (wnd.kbd.KeyIsPressed(VK_DOWN))
-	{
-		cam.MoveBy({ 0.0f,-moveSpeed });
-	}
-	if (wnd.kbd.KeyIsPressed(VK_LEFT))
-	{
-		cam.MoveBy({ -moveSpeed,0.0f });
-	}
-	if (wnd.kbd.KeyIsPressed(VK_RIGHT))
-	{
-		cam.MoveBy({ moveSpeed,0.0f });
-	}
-
-	float scaleFactor = 1.2f;
-	while (!wnd.mouse.IsEmpty())
-	{
-		const auto e = wnd.mouse.Read();
-		if (e.GetType() == Mouse::Event::Type::WheelUp)
-		{
-			cam.SetScale(cam.GetScale() * scaleFactor);
-		}
-		else if (e.GetType() == Mouse::Event::Type::WheelDown)
-		{
-			cam.SetScale(cam.GetScale() / scaleFactor);
-		}
-	}
+	cnt.Update();
 
 	for (auto& ent : stars)
 		ent.Strobe(dt);

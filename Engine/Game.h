@@ -28,8 +28,8 @@
 #include "Entity.h"
 #include "Camera.h"
 #include "Star.h"
+#include "MouseCameraController.h"
 #include <random>
-#include "Strober.h"
 
 class Game
 {
@@ -63,6 +63,7 @@ private:
 	Graphics gfx;
 	CoordinateTransformer ct;
 	Camera cam;
+	MouseCameraController cnt;
 	std::vector<Star> stars;
 	
 	/********************************/
