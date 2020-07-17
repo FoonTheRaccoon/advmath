@@ -53,6 +53,8 @@ Game::Game(MainWindow& wnd)
 		float scaleFactor_tmp = scaleFactor(rng);
 		bool placeable = true;
 		float buffer = 100.0f;
+
+
 		do 
 		{
 			placeable = true;
@@ -70,7 +72,7 @@ Game::Game(MainWindow& wnd)
 				}
 			}
 		} while (!placeable);
-		stars.emplace_back(Star::Make(inRadius_tmp, outRadius_tmp, points_tmp), Vec2(xDist_tmp, yDist_tmp), Colors::MakeRGB(r, g, b), outRadius_tmp, strobeSpeed_tmp, scaleFactor_tmp);
+		stars.emplace_back(Star::Make(inRadius_tmp, outRadius_tmp, points_tmp), Vec2(xDist_tmp, yDist_tmp), r, g, b, outRadius_tmp, strobeSpeed_tmp, scaleFactor_tmp);
 	}
 
 }
@@ -120,7 +122,7 @@ void Game::UpdateModel()
 	}
 
 	for (auto& ent : stars)
-		ent.Update(dt);
+		ent.Strobe(dt);
 }
 
 void Game::ComposeFrame()

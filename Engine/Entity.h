@@ -38,12 +38,12 @@ public:
 		return d;
 	}
 private:
-	unsigned int r = 0;
-	unsigned int g = 0;
-	unsigned int b = 0;
 	Vec2 pos = { 0.0f,0.0f };
 	std::vector<Vec2> model;
 protected:
 	float scale = 1.0f;
+	unsigned int r = 0;
+	unsigned int g = 0;
+	unsigned int b = 0;
 };
 
