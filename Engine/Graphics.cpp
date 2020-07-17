@@ -333,7 +333,7 @@ void Graphics::DrawLine( Vec2 p0,Vec2 p1,Color c )
 
 		const float b = p0.y - m * p0.x;
 
-		for( int x = (int)p0.x; x < (int)p1.x; x++ )
+		for( int x = (int)p0.x; x <= (int)p1.x; x++ )
 		{
 			const float y = m * (float)x + b;
 
@@ -354,7 +354,7 @@ void Graphics::DrawLine( Vec2 p0,Vec2 p1,Color c )
 		const float w = (p1.x - p0.x) / (p1.y - p0.y);
 		const float p = p0.x - w * p0.y;
 
-		for( int y = (int)p0.y; y < (int)p1.y; y++ )
+		for( int y = (int)p0.y; y <= (int)p1.y; y++ )
 		{
 			const float x = w * (float)y + p;
 
@@ -367,13 +367,32 @@ void Graphics::DrawLine( Vec2 p0,Vec2 p1,Color c )
 	}
 }
 
-void Graphics::DrawClosedPolyline( const std::vector<Vec2>& verts,Color c )
+void Graphics::DrawClosedPolyline( const std::vector<Vec2>& verts, Color c )
 {
+
+
 	for( auto i = verts.begin(); i != std::prev( verts.end() ); i++ )
 	{
 		DrawLine( *i,*std::next( i ),c );
 	}
 	DrawLine( verts.back(),verts.front(),c );
+}
+
+void Graphics::DrawClosedPolyline(const std::vector<Vec2>& verts, const Vec2& translation_in, float scale_x_in, float scale_y_in, Color c)
+{
+	const auto transformer = [&](Vec2 v) 
+	{
+		v.x *= scale_x_in;
+		v.y *= scale_y_in;
+		v += translation_in;
+		return v;
+	};
+
+	for (auto i = verts.begin(); i != std::prev(verts.end()); i++)
+	{
+		DrawLine(transformer (*i), transformer(*std::next(i)), c);
+	}
+	DrawLine(transformer(verts.back()), transformer(verts.front()), c);
 }
 
 

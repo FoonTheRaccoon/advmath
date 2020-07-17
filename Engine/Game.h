@@ -49,7 +49,7 @@ private:
 	std::random_device rd;
 	std::mt19937 rng;
 	const int entNum = 2000;
-	const float dist = 20000.0f;
+	const float dist = 10000.0f;
 	const float maxRad = 200.0f;
 	std::uniform_real_distribution<float> xDist;
 	std::uniform_real_distribution<float> yDist;

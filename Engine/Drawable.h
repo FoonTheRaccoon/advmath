@@ -6,8 +6,8 @@
 class Drawable
 {
 public:
-	Drawable(std::vector<Vec2> model, Color c = Colors::White)
-		: model(std::move(model)), c(c)
+	Drawable(const std::vector<Vec2>& model, Color c = Colors::White)
+		: model(&model), c(c)
 	{}
 	void Translate(const Vec2& trans_in)
 	{
@@ -26,19 +26,14 @@ public:
 		translation.x *= scale_in_x;
 		translation.y *= scale_in_y;
 	}
-	void Render(Graphics& gfx)
+	void Render(Graphics& gfx) const
 	{
-		for (auto& v : model)
-		{
-			v.x *= scale_x;
-			v.y *= scale_y;
-			v += translation;
-		}
-		gfx.DrawClosedPolyline(model, c);
+		
+		gfx.DrawClosedPolyline(*model, translation, scale_x, scale_y,  c);
 	}
 private:
 	Color c;
-	std::vector<Vec2> model;
+	const std::vector<Vec2>* model;
 	Vec2 translation = { 0.0f,0.0f };
 	float scale_x = 1.0f;
 	float scale_y = 1.0f;
