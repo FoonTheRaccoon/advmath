@@ -79,4 +79,5 @@ private:
 public:
 	static constexpr int ScreenWidth = 800;
 	static constexpr int ScreenHeight = 600;
+	int ScreenLengthFromCenter = sqrt(ScreenWidth * ScreenWidth / 4 + ScreenHeight * ScreenHeight / 4);
 };

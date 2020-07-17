@@ -48,6 +48,12 @@ public:
 	{
 		return sqrt( LenSq() );
 	}
+	T		DistFromOtherVec2(const _Vec2& other) const
+	{
+		T tmp_x = x - other.x;
+		T tmp_y = y - other.y;
+		return sqrt(tmp_x * tmp_x + tmp_y * tmp_y);
+	}
 	_Vec2&	Normalize()
 	{
 		const T length = Len();
@@ -119,6 +125,7 @@ public:
 	{
 		return !(*this == rhs);
 	}
+
 public:
 	T x;
 	T y;

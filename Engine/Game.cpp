@@ -128,5 +128,6 @@ void Game::UpdateModel()
 void Game::ComposeFrame()
 {
 	for(const auto& ent : stars)
-		cam.Draw( ent.GetDrawable());
+		if (ent.GetPos().DistFromOtherVec2(cam.GetPos()) < gfx.ScreenLengthFromCenter / cam.GetScale())
+			cam.Draw( ent.GetDrawable());
 }
