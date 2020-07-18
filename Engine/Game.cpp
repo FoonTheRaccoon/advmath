@@ -92,6 +92,7 @@ void Game::UpdateModel()
 
 	for (auto& ent : stars)
 		ent.Strobe(dt);
+
 }
 
 void Game::ComposeFrame()
