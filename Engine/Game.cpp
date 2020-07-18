@@ -34,7 +34,7 @@ Game::Game(MainWindow& wnd)
 	yDist(-dist, dist),
 	inRadius(0.2f, 0.6f),
 	outRadius(50.0f, maxRad),
-	points(3, 8),
+	points(2, 8),
 	rgb(0, 255),
 	strobeSpeed(1.0f,10.0f),
 	scaleFactor(0.05f, 0.95f)
@@ -53,8 +53,6 @@ Game::Game(MainWindow& wnd)
 		float strobeSpeed_tmp = strobeSpeed(rng);
 		float scaleFactor_tmp = scaleFactor(rng);
 		bool placeable = true;
-		float buffer = 100.0f;
-
 
 		do 
 		{
@@ -67,7 +65,7 @@ Game::Game(MainWindow& wnd)
 				float xdiff = ent.GetPos().x - xDist_tmp; 
 				float ydiff = ent.GetPos().y - yDist_tmp;
 				float distance = sqrt(xdiff * xdiff + ydiff * ydiff);
-				if (distance < (ent.GetRadius() + outRadius_tmp + buffer))
+				if (distance  < (ent.GetRadius() + outRadius_tmp))
 				{
 					placeable = false;
 				}
