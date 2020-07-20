@@ -19,9 +19,9 @@ public:
 		if (time >= maxTime)
 			time = 0.0f;
 
-		entity.r = 100.0f * sin(time * strobeSpeed + init_r) + 140.0f;
-		entity.g = 100.0f * sin(time * strobeSpeed + init_g) + 140.0f;
-		entity.b = 100.0f * sin(time * strobeSpeed + init_b) + 140.0f;
+		entity.r = int(100.0f * sin(time * strobeSpeed + init_r) + 140.0f);
+		entity.g = int(100.0f * sin(time * strobeSpeed + init_g) + 140.0f);
+		entity.b = int(100.0f * sin(time * strobeSpeed + init_b) + 140.0f);
 
 		float scale_diff = 1.0f - scaleFactor;
 		float scale_swing = scale_diff / 2.0f;

@@ -17,6 +17,13 @@ public:
 				}
 			}
 		}
+		else
+		{
+			if (!DoVertsOverlap(static_ent, dyn_ent))
+			{
+				dyn_ent.CollidableSwitch();
+			}
+		}
 	}
 private:
 	bool AreCloseEnoughToCheck(Entity& static_ent, Entity& dyn_ent)
@@ -25,24 +32,20 @@ private:
 	}
 	bool DoVertsOverlap(Entity& static_ent, Entity& dyn_ent)
 	{
-		std::vector<Vec2> static_tmp = static_ent.GetModelRef();
-		std::vector<Vec2> dyn_tmp = dyn_ent.GetModelRef();
 
-		for (auto i = static_tmp.begin(); i != std::prev(static_tmp.end()); i++)
+		for (auto i = static_ent.GetModelRef().begin(); i != std::prev(static_ent.GetModelRef().end()); i++)
 		{
 				if (DistancePntFromLine(*i, *std::next(i), dyn_ent.GetPos()) <= dyn_ent.GetMaxPntFromCenter_Radius())
 				{
-					PntToCollide = dyn_ent.GetPos();
 					LinePnt_1_ToCollide = *i;
 					LinePnt_2_ToCollide = *std::next(i);
 					return true;
 				}
 		}
-		if (DistancePntFromLine(static_tmp.back(), static_tmp.front(), dyn_ent.GetPos()) <= dyn_ent.GetMaxPntFromCenter_Radius())
+		if (DistancePntFromLine(static_ent.GetModelRef().back(), static_ent.GetModelRef().front(), dyn_ent.GetPos()) <= dyn_ent.GetMaxPntFromCenter_Radius())
 		{
-			PntToCollide = dyn_ent.GetPos();
-			LinePnt_1_ToCollide = static_tmp.back();
-			LinePnt_2_ToCollide = static_tmp.front();
+			LinePnt_1_ToCollide = static_ent.GetModelRef().back();
+			LinePnt_2_ToCollide = static_ent.GetModelRef().front();
 			return true;
 		}
 		
@@ -54,10 +57,14 @@ private:
 	}
 	void DoCollision(Entity& static_ent, Entity& dyn_ent)
 	{
-		dyn_ent.SetVelocity(Vec2(-2.0f, -2.0f));
+		Vec2 v = dyn_ent.GetVelocity();
+		Vec2 w = (LinePnt_2_ToCollide - LinePnt_1_ToCollide);
+		w = w.GetNormalized();
+
+		dyn_ent.SetVelocity(w * (v * w) * 2.0f - v);
+		dyn_ent.CollidableSwitch();
 	}
 private:
-	Vec2 PntToCollide = { 0.0f, 0.0f };
 
 	Vec2 LinePnt_1_ToCollide = { 0.0f, 0.0f };
 
