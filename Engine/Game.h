@@ -20,6 +20,7 @@
  ******************************************************************************************/
 #pragma once
 
+#include <random>
 #include "Keyboard.h"
 #include "Mouse.h"
 #include "Graphics.h"
@@ -29,7 +30,7 @@
 #include "Camera.h"
 #include "Star.h"
 #include "MouseCameraController.h"
-#include <random>
+#include "Physics.h"
 
 class Game
 {
@@ -64,6 +65,7 @@ private:
 	CoordinateTransformer ct;
 	Camera cam;
 	MouseCameraController cnt;
+	Physics phy;
 	Star bounds;
 	Star bouncer;
 	/********************************/

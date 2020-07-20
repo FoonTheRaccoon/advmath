@@ -49,6 +49,8 @@ void Game::UpdateModel()
 
 	cnt.Update();
 	bouncer.UpdatePos();
+	
+	phy.Update(bounds, bouncer);
 }
 
 void Game::ComposeFrame()

@@ -7,8 +7,8 @@
 class Entity
 {
 public:
-	Entity(std::vector<Vec2> model, const Vec2& pos = Vec2(0.0f, 0.0f), const Vec2& vel = Vec2(0.0f, 0.0f), unsigned int r = 0, unsigned int g = 0, unsigned int b = 0)
-		: model(std::move(model)), pos(pos), vel(vel), r(r), g(g), b(b)
+	Entity(std::vector<Vec2> model, const Vec2& pos = Vec2(0.0f, 0.0f), const Vec2& vel = Vec2(0.0f, 0.0f), float radius = 1.0f, unsigned int r = 0, unsigned int g = 0, unsigned int b = 0)
+		: model(std::move(model)), pos(pos), vel(vel), radius(radius), r(r), g(g), b(b)
 	{}
 	const Vec2& GetPos() const
 	{
@@ -42,6 +42,25 @@ public:
 	{
 		pos += vel;
 	}
+	float GetMaxPntFromCenter_Radius() const
+	{
+		return radius;
+	}
+	bool IsCollidable() const
+	{
+		return collidable;
+	}
+	void CollidableSwitch()
+	{
+		if (collidable)
+		{
+			collidable = false;
+		}
+		else
+		{
+			collidable = true;
+		}
+	}
 	Drawable GetDrawable() const
 	{
 		Drawable d(model, Colors::MakeRGB(r,g,b));
@@ -49,11 +68,17 @@ public:
 		d.Translate(pos);
 		return d;
 	}
+	std::vector<Vec2>& GetModelRef()
+	{
+		return model;
+	}
 private:
 	Vec2 pos = { 0.0f,0.0f };
 	Vec2 vel = { 0.0f, 0.0f };
 	std::vector<Vec2> model;
 	float scale = 1.0f;
+	float radius = 1.0f;
+	bool collidable = true;
 public:
 	unsigned int r = 0;
 	unsigned int g = 0;
