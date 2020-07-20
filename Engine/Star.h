@@ -9,8 +9,8 @@
 class Star : public Entity
 {
 public:
-	Star(std::vector<Vec2> model, const Vec2& pos = Vec2(0.0f, 0.0f), unsigned int r = 0, unsigned int g = 0, unsigned int b = 0, float rad = 1.0f, float strobeSpeed = 1.0f, float scaleFactor = 1.0f)
-		: Entity(model, pos, r, g, b), radius( rad ), strobie(r, g, b, strobeSpeed, scaleFactor)
+	Star(std::vector<Vec2> model, const Vec2& pos = Vec2(0.0f, 0.0f), const Vec2& vel = Vec2(0.0f, 0.0f), unsigned int r = 0, unsigned int g = 0, unsigned int b = 0, float rad = 1.0f, float strobeSpeed = 1.0f, float scaleFactor = 1.0f)
+		: Entity(model, pos, vel, r, g, b), radius( rad ), strobie(r, g, b, strobeSpeed, scaleFactor)
 	{}
 	static std::vector<Vec2> Make( float outerRadius,float innerRadius,int nFlares = 5 )
 	{

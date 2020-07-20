@@ -64,8 +64,8 @@ private:
 	CoordinateTransformer ct;
 	Camera cam;
 	MouseCameraController cnt;
-	std::vector<Star> stars;
-	
+	Star bounds;
+	Star bouncer;
 	/********************************/
 	/*  User Variables              */
 	/********************************/
