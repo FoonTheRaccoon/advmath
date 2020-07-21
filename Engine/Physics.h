@@ -1,6 +1,7 @@
 #pragma once
 #include "Vec2.h"
 #include "Entity.h"
+#define PI 3.14159265359f
 
 class Physics
 {
@@ -32,13 +33,14 @@ private:
 
 		for (auto i = static_ent.GetModelRef().begin(); i != std::prev(static_ent.GetModelRef().end()); i++)
 		{
-				if (DistancePntFromLine(*i, *std::next(i), dyn_ent.GetPos()) <= dyn_ent.GetMaxPntFromCenter_Radius())
+			
+				if (ObjCanCollideWithLineSegment(*i, *std::next(i), static_ent, dyn_ent))
 				{
 					CollidableWalls.emplace_back(std::pair<Vec2, Vec2> (*i, *std::next(i)));
 					isOverlapping = true;
 				}
 		}
-		if (DistancePntFromLine(static_ent.GetModelRef().back(), static_ent.GetModelRef().front(), dyn_ent.GetPos()) <= dyn_ent.GetMaxPntFromCenter_Radius())
+		if (ObjCanCollideWithLineSegment(static_ent.GetModelRef().back(), static_ent.GetModelRef().front(), static_ent, dyn_ent))
 		{
 			CollidableWalls.emplace_back(std::pair<Vec2, Vec2>(static_ent.GetModelRef().back(), static_ent.GetModelRef().front()));
 			isOverlapping = true;
@@ -61,6 +63,50 @@ private:
 	{
 		return abs((p2.y - p1.y) * pnt.x - (p2.x - p1.x) * pnt.y + p2.x * p1.y - p2.y * p1.x) / sqrt((p2.y - p1.y) * (p2.y - p1.y) + (p2.x - p1.x) * (p2.x - p1.x));
 	}
+	bool ObjCanCollideWithLineSegment(const Vec2& p1, const Vec2& p2, Entity& static_ent, Entity& dyn_ent)
+	{
+		//Create a func to see if angle between Obj vel vec and line vec are obtuse or accute
+
+		Vec2 v = dyn_ent.GetVelocity();
+		float v_mag = v.Len();
+
+		Vec2 l = GetLineNorm(p1, p2, static_ent, dyn_ent);
+		float l_mag = l.Len();
+
+		float theta = acos((v * l)/ (v_mag * l_mag));
+
+		if (theta <= (PI / 2))
+		{
+			return false;
+		}
+		
+		bool canCollidie = false;
+
+		if (DistancePntFromLine(p1, p2, dyn_ent.GetPos()) <= dyn_ent.GetMaxPntFromCenter_Radius())
+		{
+			canCollidie = true;
+		}
+		
+		return canCollidie;
+	}
+	Vec2 GetLineNorm(const Vec2& p1, const Vec2& p2, Entity& static_ent, Entity& dyn_ent)
+	{
+		float dy = p1.y - p2.y;
+		float mid_y = p1.y + (dy / 2.0f);
+
+		float dx = p1.x - p2.x;
+		float mid_x = p1.x + (dx / 2.0f);
+
+
+		Vec2 LineNorm = { mid_x , mid_y};
+
+		if (static_ent.GetPos().DistFromOtherVec2(dyn_ent.GetPos()) < static_ent.GetMaxPntFromCenter_Radius())
+		{
+			LineNorm = -LineNorm;
+		}
+
+		return LineNorm;
+	}
 	void DoCollision(Entity& static_ent, Entity& dyn_ent)
 	{
 		Vec2 init_vel = dyn_ent.GetVelocity();
@@ -71,16 +117,16 @@ private:
 		dyn_ent.SetVelocity((w * (v * w) * 2.0f - v) * reboudEff);
 
 
-		float DistToClosestWall =  DistancePntFromLine(CollidableWall.first, CollidableWall.second, dyn_ent.GetPos());
-
-		if (DistToClosestWall < dyn_ent.GetMaxPntFromCenter_Radius())
-		{
-			Vec2 Direction = init_vel.GetNormalized();
-
-			Direction = Direction * -1.0f;
-
-			dyn_ent.SetPos(dyn_ent.GetPos() + (Direction * (dyn_ent.GetMaxPntFromCenter_Radius() - DistToClosestWall)));
-		}
+		//float DistToClosestWall =  DistancePntFromLine(CollidableWall.first, CollidableWall.second, dyn_ent.GetPos());
+		//
+		//if (DistToClosestWall < dyn_ent.GetMaxPntFromCenter_Radius())
+		//{
+		//	Vec2 Direction = init_vel.GetNormalized();
+		//
+		//	Direction = Direction * -1.0f;
+		//
+		//	dyn_ent.SetPos(dyn_ent.GetPos() + (Direction * (dyn_ent.GetMaxPntFromCenter_Radius() - DistToClosestWall)));
+		//}
 
 	}
 private:
