@@ -79,6 +79,11 @@ private:
 	}
 	bool ObjCanCollideWithLineSegment(const Vec2& p1, const Vec2& p2, Entity& static_ent, Entity& dyn_ent)
 	{
+		if (DistancePntFromLine(p1, p2, dyn_ent.GetPos()) > dyn_ent.GetMaxPntFromCenter_Radius())
+		{
+			return false;
+		}
+
 		Vec2 v = dyn_ent.GetVelocity();
 		float v_mag = v.Len();
 
@@ -87,19 +92,12 @@ private:
 
 		float theta = acos((v * l)/ (v_mag * l_mag));
 
-		if (theta <= (PI / 2))
+		if (abs(theta) < (PI / 2))
 		{
 			return false;
 		}
 		
-		bool canCollidie = false;
-
-		if (DistancePntFromLine(p1, p2, dyn_ent.GetPos()) <= dyn_ent.GetMaxPntFromCenter_Radius())
-		{
-			canCollidie = true;
-		}
-		
-		return canCollidie;
+		return true;
 	}
 	Vec2 GetLineNorm(const Vec2& p1, const Vec2& p2, Entity& static_ent, Entity& dyn_ent)
 	{
@@ -141,5 +139,5 @@ private:
 	}
 private:
 	std::pair<Vec2,Vec2> CollidableWall;
-	float reboudEff = 1.0f;
+	float reboudEff = 0.99f;
 };
