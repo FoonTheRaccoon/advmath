@@ -67,6 +67,7 @@ private:
 	MouseCameraController cnt;
 	Physics phy;
 	Star bounds;
+	Star lilBounds;
 	std::vector<Star> bouncers;
 	/********************************/
 	/*  User Variables              */

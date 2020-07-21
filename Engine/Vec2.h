@@ -121,6 +121,15 @@ public:
 	{
 		return _Vec2( *this ) /= rhs;
 	}
+	void SwapXY()
+	{
+		std::swap(x,y);
+	}
+	void MakeInverseVec()
+	{
+		SwapXY();
+		x *= (T)-1;
+	}
 	bool	operator==( const _Vec2 &rhs ) const
 	{
 		return x == rhs.x && y == rhs.y;

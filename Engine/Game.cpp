@@ -29,15 +29,16 @@ Game::Game(MainWindow& wnd)
 	ct(gfx),
 	cam(ct),
 	cnt(wnd.mouse, cam),
-	bounds(Star::Make(400.0f, 400.0f, 3), Vec2(0.0f, 0.0f), Vec2(0.0f, 0.0f), 255, 100, 0, 400.0f)
+	bounds(Star::Make(400.0f, 400.0f, 4), Vec2(0.0f, 0.0f), Vec2(0.0f, 0.0f), 255, 0, 0, 400.0f),
+	lilBounds(Star::Make(100.0f, 100.0f, 4), Vec2(-100.0f, -100.0f), Vec2(0.0f, 0.0f), 0, 255, 0, 400.0f)
 {
-	bouncers.emplace_back(Star::Make(40.0f, 40.0f, 10), Vec2(100.0f, 0.0f), Vec2(5.1f, -3.8f), 0, 100, 255, 40.0f);
-	bouncers.emplace_back(Star::Make(40.0f, 40.0f, 10), Vec2(-100.0f, 0.0f), Vec2(1.1f, -3.8f), 100, 100, 25, 40.0f);
-	bouncers.emplace_back(Star::Make(40.0f, 40.0f, 10), Vec2(0.0f, 100.0f), Vec2(-5.1f, 1.8f), 90, 100, 25, 40.0f);
-	bouncers.emplace_back(Star::Make(40.0f, 40.0f, 10), Vec2(0.0f, -100.0f), Vec2(8.1f, -1.8f), 7, 10, 255, 40.0f);
-	bouncers.emplace_back(Star::Make(40.0f, 40.0f, 10), Vec2(0.0f, 0.0f), Vec2(1.1f, 1.8f), 38, 100, 25, 40.0f);
-	bouncers.emplace_back(Star::Make(40.0f, 40.0f, 10), Vec2(100.0f, 100.0f), Vec2(5.1f, -7.8f), 59, 10, 255, 40.0f);
-	bouncers.emplace_back(Star::Make(40.0f, 40.0f, 10), Vec2(-100.0f, -100.0f), Vec2(-2.1f, -.8f), 78, 10, 255, 40.0f);
+	bouncers.emplace_back(Star::Make(20.0f, 20.0f, 10), Vec2(10.0f, 0.0f), Vec2(5.1f, -3.8f), 0, 100, 255, 20.0f);
+	bouncers.emplace_back(Star::Make(20.0f, 20.0f, 10), Vec2(-10.0f, 0.0f), Vec2(1.1f, -3.8f), 100, 100, 25, 20.0f);
+	bouncers.emplace_back(Star::Make(20.0f, 20.0f, 10), Vec2(0.0f, 10.0f), Vec2(-5.1f, 1.8f), 90, 100, 25, 20.0f);
+	bouncers.emplace_back(Star::Make(20.0f, 20.0f, 10), Vec2(0.0f, -10.0f), Vec2(8.1f, -1.8f), 7, 10, 255, 20.0f);
+	bouncers.emplace_back(Star::Make(20.0f, 20.0f, 10), Vec2(0.0f, 0.0f), Vec2(1.1f, 1.8f), 38, 100, 25, 20.0f);
+	bouncers.emplace_back(Star::Make(20.0f, 20.0f, 10), Vec2(10.0f, 10.0f), Vec2(5.1f, -7.8f), 59, 10, 255, 20.0f);
+	bouncers.emplace_back(Star::Make(20.0f, 20.0f, 10), Vec2(-10.0f, -10.0f), Vec2(-2.1f, -.8f), 78, 10, 255, 20.0f);
 }
 
 void Game::Go()
@@ -55,13 +56,17 @@ void Game::UpdateModel()
 	cnt.Update();
 	for (auto& ent : bouncers)
 	{
-		ent.UpdatePos();
+		ent.UpdatePos(dt);
 	}
 	
 	for (auto& ent : bouncers)
 	{
 		phy.Update(bounds, ent);
 	}
+	//for (auto& ent : bouncers)
+	//{
+	//	phy.Update(lilBounds, ent);
+	//}
 }
 
 void Game::ComposeFrame()
@@ -71,6 +76,7 @@ void Game::ComposeFrame()
 	//		cam.Draw( ent.GetDrawable());
 
 	cam.Draw(bounds.GetDrawable());
+	cam.Draw(lilBounds.GetDrawable());
 	for (auto& ent : bouncers)
 	{
 		cam.Draw(ent.GetDrawable());
