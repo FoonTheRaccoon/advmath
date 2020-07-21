@@ -31,18 +31,32 @@ private:
 		static std::vector<std::pair<Vec2, Vec2>> CollidableWalls;
 		CollidableWalls.reserve(10);
 
+		static Vec2 p1;
+		static Vec2 p2;
+
 		for (auto i = static_ent.GetModelRef().begin(); i != std::prev(static_ent.GetModelRef().end()); i++)
 		{
+			p1 = *i;
+			p2 = *std::next(i);
+
+			TransformPoints(p1, p2, static_ent);
 			
-				if (ObjCanCollideWithLineSegment(*i, *std::next(i), static_ent, dyn_ent))
-				{
-					CollidableWalls.emplace_back(std::pair<Vec2, Vec2> (*i, *std::next(i)));
-					isOverlapping = true;
-				}
+			if (ObjCanCollideWithLineSegment(p1, p2, static_ent, dyn_ent))
+			{
+				
+				CollidableWalls.emplace_back(std::pair<Vec2, Vec2> (p1, p2));
+				isOverlapping = true;
+			}
 		}
-		if (ObjCanCollideWithLineSegment(static_ent.GetModelRef().back(), static_ent.GetModelRef().front(), static_ent, dyn_ent))
+
+		p1 = static_ent.GetModelRef().back();
+		p2 = static_ent.GetModelRef().front();
+
+		TransformPoints(p1, p2, static_ent);
+
+		if (ObjCanCollideWithLineSegment(p1, p2, static_ent, dyn_ent))
 		{
-			CollidableWalls.emplace_back(std::pair<Vec2, Vec2>(static_ent.GetModelRef().back(), static_ent.GetModelRef().front()));
+			CollidableWalls.emplace_back(std::pair<Vec2, Vec2>(p1, p2));
 			isOverlapping = true;
 		}
 		
@@ -65,8 +79,6 @@ private:
 	}
 	bool ObjCanCollideWithLineSegment(const Vec2& p1, const Vec2& p2, Entity& static_ent, Entity& dyn_ent)
 	{
-		//Create a func to see if angle between Obj vel vec and line vec are obtuse or accute
-
 		Vec2 v = dyn_ent.GetVelocity();
 		float v_mag = v.Len();
 
@@ -100,12 +112,22 @@ private:
 
 		Vec2 LineNorm = { mid_x , mid_y};
 
+		LineNorm = LineNorm - static_ent.GetPos();
+
 		if (static_ent.GetPos().DistFromOtherVec2(dyn_ent.GetPos()) < static_ent.GetMaxPntFromCenter_Radius())
 		{
 			LineNorm = -LineNorm;
 		}
 
 		return LineNorm;
+	}
+	void TransformPoints(Vec2& p1, Vec2& p2, Entity& static_ent)
+	{
+		p1 *= static_ent.GetScale();
+		p1 += static_ent.GetPos();
+
+		p2 *= static_ent.GetScale();
+		p2 += static_ent.GetPos();
 	}
 	void DoCollision(Entity& static_ent, Entity& dyn_ent)
 	{

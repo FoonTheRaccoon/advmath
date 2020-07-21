@@ -30,7 +30,7 @@ Game::Game(MainWindow& wnd)
 	cam(ct),
 	cnt(wnd.mouse, cam),
 	bounds(Star::Make(400.0f, 400.0f, 20), Vec2(0.0f, 0.0f), Vec2(0.0f, 0.0f), 255, 0, 0, 400.0f),
-	lilBounds(Star::Make(100.0f, 100.0f, 20), Vec2(0.0f, 0.0f), Vec2(0.0f, 0.0f), 0, 255, 0, 100.0f)
+	lilBounds(Star::Make(100.0f, 100.0f, 20), Vec2(100.0f, 100.0f), Vec2(0.0f, 0.0f), 0, 255, 0, 100.0f)
 {
 	bouncers.emplace_back(Star::Make(20.0f, 20.0f, 10), Vec2(100.0f, 0.0f), Vec2(5.1f, -3.8f), 0, 100, 255, 20.0f);
 	bouncers.emplace_back(Star::Make(20.0f, 20.0f, 10), Vec2(-300.0f, 0.0f), Vec2(10.1f, -0.8f), 100, 100, 25, 20.0f);
