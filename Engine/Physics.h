@@ -138,21 +138,8 @@ private:
 		Vec2 v = init_vel;
 		dyn_ent.SetVelocity((w * (v * w) * 2.0f - v) * reboudEff);
 
-
-		//float DistToClosestWall =  DistancePntFromLine(CollidableWall.first, CollidableWall.second, dyn_ent.GetPos());
-		//
-		//if (DistToClosestWall < dyn_ent.GetMaxPntFromCenter_Radius())
-		//{
-		//	Vec2 Direction = init_vel.GetNormalized();
-		//
-		//	Direction = Direction * -1.0f;
-		//
-		//	dyn_ent.SetPos(dyn_ent.GetPos() + (Direction * (dyn_ent.GetMaxPntFromCenter_Radius() - DistToClosestWall)));
-		//}
-
 	}
 private:
 	std::pair<Vec2,Vec2> CollidableWall;
-
 	float reboudEff = 1.0f;
 };

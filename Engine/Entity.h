@@ -38,7 +38,7 @@ public:
 	{
 		vel = vel_in;
 	}
-	void UpdatePos(float dt)
+	void UpdatePos()
 	{
 		pos += vel;
 	}

@@ -29,7 +29,7 @@ Game::Game(MainWindow& wnd)
 	ct(gfx),
 	cam(ct),
 	cnt(wnd.mouse, cam),
-	bounds(Star::Make(400.0f, 400.0f, 20), Vec2(0.0f, 0.0f), Vec2(0.0f, 0.0f), 255, 0, 0, 400.0f),
+	bounds(Star::Make(400.0f, 400.0f, 20), Vec2(-100.0f, -100.0f), Vec2(0.0f, 0.0f), 255, 0, 0, 400.0f),
 	lilBounds(Star::Make(100.0f, 100.0f, 20), Vec2(100.0f, 100.0f), Vec2(0.0f, 0.0f), 0, 255, 0, 100.0f)
 {
 	bouncers.emplace_back(Star::Make(20.0f, 20.0f, 10), Vec2(100.0f, 0.0f), Vec2(5.1f, -3.8f), 0, 100, 255, 20.0f);
@@ -53,10 +53,36 @@ void Game::UpdateModel()
 {
 	float dt = ft.Mark();
 
+	static Vec2 dir;
+	const float speed = 2.0f;
+
+	if (wnd.kbd.KeyIsPressed(VK_UP))
+	{
+		dir = { 0.0f, speed };
+		lilBounds.TranslateBy(dir);
+	}
+	if (wnd.kbd.KeyIsPressed(VK_DOWN))
+	{
+		dir = { 0.0f, -speed };
+		lilBounds.TranslateBy(dir);
+	}
+	if (wnd.kbd.KeyIsPressed(VK_LEFT))
+	{
+		dir = { -speed, 0.0f};
+		lilBounds.TranslateBy(dir);
+	}
+	if (wnd.kbd.KeyIsPressed(VK_RIGHT))
+	{
+		dir = { speed, 0.0f };
+		lilBounds.TranslateBy(dir);
+	}
+
+	
+
 	cnt.Update();
 	for (auto& ent : bouncers)
 	{
-		ent.UpdatePos(dt);
+		ent.UpdatePos();
 	}
 	
 	for (auto& ent : bouncers)
