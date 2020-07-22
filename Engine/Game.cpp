@@ -29,16 +29,17 @@ Game::Game(MainWindow& wnd)
 	ct(gfx),
 	cam(ct),
 	cnt(wnd.mouse, cam),
-	bounds(Star::Make(400.0f, 400.0f, 30), Vec2(0.0f, 0.0f), Vec2(0.0f, 0.0f), 255, 0, 0, 400.0f),
+	bounds(Star::Make(400.0f, 400.0f, 30), Vec2(0.0f, 0.0f), Vec2(0.0f, 0.0f), 255, 255, 255, 400.0f),
 	lilBounds(Star::Make(100.0f, 100.0f, 10), Vec2(100.0f, 100.0f), Vec2(0.0f, 0.0f), 0, 255, 0, 100.0f)
 {
-	bouncers.emplace_back(Star::Make(20.0f, 20.0f, 10), Vec2(100.0f, 100.0f), Vec2(5.1f, -3.8f), 0, 100, 255, 20.0f);
-	bouncers.emplace_back(Star::Make(20.0f, 20.0f, 10), Vec2(-300.0f, 0.0f), Vec2(10.1f, -0.8f), 100, 100, 25, 20.0f);
-	bouncers.emplace_back(Star::Make(20.0f, 20.0f, 10), Vec2(0.0f, 0.0f), Vec2(-5.1f, 1.8f), 90, 100, 25, 20.0f);
-	bouncers.emplace_back(Star::Make(20.0f, 20.0f, 10), Vec2(0.0f, -300.0f), Vec2(0.1f, -10.8f), 7, 10, 255, 20.0f);
-	bouncers.emplace_back(Star::Make(20.0f, 20.0f, 10), Vec2(0.0f, 200.0f), Vec2(10.1f, 1.8f), 38, 100, 25, 20.0f);
-	bouncers.emplace_back(Star::Make(20.0f, 20.0f, 10), Vec2(300.0f, 10.0f), Vec2(5.1f, -7.8f), 59, 10, 255, 20.0f);
-	bouncers.emplace_back(Star::Make(20.0f, 20.0f, 10), Vec2(-10.0f, -100.0f), Vec2(-2.1f, -.8f), 78, 10, 255, 20.0f);
+	float rad = 30.0f;
+	bouncers.emplace_back(Star::Make(rad, rad, 10), Vec2(100.0f, 100.0f),	Vec2(5.1f, -3.8f), 255, 100, 255,	rad);
+	bouncers.emplace_back(Star::Make(rad, rad, 10), Vec2(-300.0f, 0.0f),	Vec2(10.1f, -0.8f), 255, 100, 25,	rad);
+	bouncers.emplace_back(Star::Make(rad, rad, 10), Vec2(0.0f, 0.0f),		Vec2(-5.1f, 1.8f), 90, 255, 25,		rad);
+	bouncers.emplace_back(Star::Make(rad, rad, 10), Vec2(0.0f, -300.0f),	Vec2(0.1f, -10.8f), 255, 10, 255,	rad);
+	bouncers.emplace_back(Star::Make(rad, rad, 10), Vec2(0.0f, 200.0f),		Vec2(10.1f, 1.8f), 255, 100, 25,	rad);
+	bouncers.emplace_back(Star::Make(rad, rad, 10), Vec2(300.0f, 10.0f),	Vec2(5.1f, -7.8f), 255, 10, 255,	rad);
+	bouncers.emplace_back(Star::Make(rad, rad, 10), Vec2(-10.0f, -100.0f),	Vec2(-2.1f, -.8f), 255, 10, 255,	rad);
 }
 
 void Game::Go()
@@ -55,6 +56,7 @@ void Game::UpdateModel()
 
 	static Vec2 dir;
 	const float speed = 2.0f;
+	const float scaleFac = 1.01f;
 
 	if (wnd.kbd.KeyIsPressed(VK_UP))
 	{
@@ -77,7 +79,46 @@ void Game::UpdateModel()
 		lilBounds.TranslateBy(dir);
 	}
 
+
+	if (wnd.kbd.KeyIsPressed(VK_F1))
+	{
+		lilBounds.SetScale(lilBounds.GetScale() / scaleFac);
+	}
+	else if (wnd.kbd.KeyIsPressed(VK_F2))
+	{
+		lilBounds.SetScale(lilBounds.GetScale() * scaleFac);
+	}
+
 	
+	if (wnd.kbd.KeyIsPressed(VK_NUMPAD0))
+	{
+		bounds.SetScale(bounds.GetScale() / scaleFac);
+	}
+	else if (wnd.kbd.KeyIsPressed(VK_NUMPAD1))
+	{
+		bounds.SetScale(bounds.GetScale() * scaleFac);
+	}
+
+	if (wnd.kbd.KeyIsPressed(VK_NUMPAD8))
+	{
+		dir = { 0.0f, speed };
+		bounds.TranslateBy(dir);
+	}
+	if (wnd.kbd.KeyIsPressed(VK_NUMPAD5))
+	{
+		dir = { 0.0f, -speed };
+		bounds.TranslateBy(dir);
+	}
+	if (wnd.kbd.KeyIsPressed(VK_NUMPAD4))
+	{
+		dir = { -speed, 0.0f };
+		bounds.TranslateBy(dir);
+	}
+	if (wnd.kbd.KeyIsPressed(VK_NUMPAD6))
+	{
+		dir = { speed, 0.0f };
+		bounds.TranslateBy(dir);
+	}
 
 	cnt.Update();
 	for (auto& ent : bouncers)

@@ -60,13 +60,15 @@ private:
 			isOverlapping = true;
 		}
 		
+		//Closest to midpoint
 		if (isOverlapping)
 		{
-			std::sort(CollidableWalls.begin(), CollidableWalls.end(), 
+			std::sort(CollidableWalls.begin(), CollidableWalls.end(),
 				[&](std::pair<Vec2, Vec2> wall1, std::pair<Vec2, Vec2> wall2)
-					{
-					return DistancePntFromLine(wall1.first, wall1.second, dyn_ent.GetPos()) < DistancePntFromLine(wall2.first, wall2.second, dyn_ent.GetPos());
-					});
+				{
+					return MidPointOfLineSegment(wall1.first, wall1.second).DistFromOtherVec2(dyn_ent.GetPos()) 
+						< MidPointOfLineSegment(wall2.first, wall2.second).DistFromOtherVec2(dyn_ent.GetPos());
+				});
 			CollidableWall = CollidableWalls[0];
 		}
 		
@@ -84,13 +86,16 @@ private:
 			return false;
 		}
 
-		Vec2 v = dyn_ent.GetVelocity();
-		float v_mag = v.Len();
+		static Vec2 v, l;
+		static float v_mag, l_mag, theta;
 
-		Vec2 l = GetLineNorm(p1, p2, static_ent, dyn_ent);
-		float l_mag = l.Len();
+		v = dyn_ent.GetVelocity();
+		v_mag = v.Len();
 
-		float theta = acos((v * l)/ (v_mag * l_mag));
+		l = GetLineNorm(p1, p2, static_ent, dyn_ent);
+		l_mag = l.Len();
+
+		theta = acos((v * l)/ (v_mag * l_mag));
 
 		if (abs(theta) < (PI / 2))
 		{
@@ -99,18 +104,10 @@ private:
 		
 		return true;
 	}
-	Vec2 GetLineNorm(const Vec2& p1, const Vec2& p2, Entity& static_ent, Entity& dyn_ent)
+	Vec2& GetLineNorm(const Vec2& p1, const Vec2& p2, Entity& static_ent, Entity& dyn_ent)
 	{
-		float dy = p1.y - p2.y;
-		float mid_y = p1.y + (dy / 2.0f);
-
-		float dx = p1.x - p2.x;
-		float mid_x = p1.x + (dx / 2.0f);
-
-
-		Vec2 LineNorm = { mid_x , mid_y};
-
-		LineNorm = LineNorm - static_ent.GetPos();
+		static Vec2 LineNorm;
+		LineNorm = MidPointOfLineSegment(p1, p2) - static_ent.GetPos();
 
 		if (static_ent.GetPos().DistFromOtherVec2(dyn_ent.GetPos()) < static_ent.GetMaxPntFromCenter_Radius())
 		{
@@ -118,6 +115,21 @@ private:
 		}
 
 		return LineNorm;
+	}
+	Vec2& MidPointOfLineSegment(const Vec2& p1, const Vec2& p2)
+	{
+		static Vec2 MidPnt;
+		static float dy, mid_y, dx, mid_x;
+
+		dy = p1.y - p2.y;
+		mid_y = p1.y + (dy / 2.0f);
+
+		dx = p1.x - p2.x;
+		mid_x = p1.x + (dx / 2.0f);
+
+		MidPnt = { mid_x , mid_y };
+
+		return MidPnt;
 	}
 	void TransformPoints(Vec2& p1, Vec2& p2, Entity& static_ent)
 	{
@@ -136,8 +148,19 @@ private:
 		Vec2 v = init_vel;
 		dyn_ent.SetVelocity((w * (v * w) * 2.0f - v) * reboudEff);
 
+		float DistToClosestWall = DistancePntFromLine(CollidableWall.first, CollidableWall.second, dyn_ent.GetPos());
+		
+		if (DistToClosestWall < dyn_ent.GetMaxPntFromCenter_Radius())
+		{
+			Vec2 Direction = init_vel.GetNormalized();
+		
+			Direction = Direction * -1.0f;
+		
+			dyn_ent.SetPos(dyn_ent.GetPos() + (Direction * (dyn_ent.GetMaxPntFromCenter_Radius() - DistToClosestWall + 1.0f)));
+		}
+
 	}
 private:
 	std::pair<Vec2,Vec2> CollidableWall;
-	float reboudEff = 0.99f;
+	float reboudEff = 1.0f;
 };
