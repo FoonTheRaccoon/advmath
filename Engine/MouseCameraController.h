@@ -5,13 +5,22 @@
 class MouseCameraController
 {
 public:
-	MouseCameraController(Mouse& mouse, Camera& cam)
+	MouseCameraController(Mouse& mouse, Keyboard& kbd, Camera& cam)
 		:
 		mouse(mouse),
+		kbd(kbd),
 		cam(cam)
 	{}
-	void Update()
+	void Update(float dt)
 	{
+		if (kbd.KeyIsPressed('Q'))
+		{
+			cam.SetAngle(cam.GetAngle() + rotFactor * dt);
+		}
+		if (kbd.KeyIsPressed('E'))
+		{
+			cam.SetAngle(cam.GetAngle() - rotFactor * dt);
+		}
 		while (!mouse.IsEmpty())
 		{
 			const auto e = mouse.Read();
@@ -37,15 +46,18 @@ public:
 		{
 			const auto curPos = (Vec2)mouse.GetPos();
 			auto delta = curPos - lastPos;
-			delta.x = -delta.x; // fixes the disconnect between screen coords and math coords
-			cam.MoveBy(delta.Rotate(-cam.GetAngle()) / cam.GetScale());
+			delta.x = -delta.x; //Fixes the disconnect between screen coords and math coords
+			delta.Rotate(-cam.GetAngle()); //Fixes mouse movement when rotated
+			cam.MoveBy(delta / cam.GetScale());
 			lastPos = curPos;
 		}
 	}
 private:
 	static constexpr float zoomFactor = 1.2f;
+	static constexpr float rotFactor = 2.0f;
 	bool engaged = false;
 	Vec2 lastPos;
 	Mouse& mouse;
+	Keyboard& kbd;
 	Camera& cam;
 };

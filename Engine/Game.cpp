@@ -28,7 +28,7 @@ Game::Game(MainWindow& wnd)
 	gfx(wnd),
 	ct(gfx),
 	cam(ct),
-	cnt(wnd.mouse, cam),
+	cnt(wnd.mouse, wnd.kbd, cam),
 	rng(rd()),
 	xDist(-dist, dist),
 	yDist(-dist, dist),
@@ -90,23 +90,14 @@ void Game::UpdateModel()
 {
 	float dt = ft.Mark();
 
-	cnt.Update();
+	cnt.Update(dt);
 
 	for (auto& ent : stars)
 	{
 		ent.Strobe(dt);
 	}
 	
-	float omega = 0.01;
-
-	if (wnd.kbd.KeyIsPressed(VK_LEFT))
-	{
-		cam.SetAngle(cam.GetAngle() + omega);
-	}
-	if (wnd.kbd.KeyIsPressed(VK_RIGHT))
-	{
-		cam.SetAngle(cam.GetAngle() - omega);
-	}
+	
 }
 
 void Game::ComposeFrame()
