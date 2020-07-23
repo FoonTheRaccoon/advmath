@@ -27,14 +27,24 @@ public:
 	{
 		scale = s;
 	}
+	void SetAngle(const float& newAngle)
+	{
+		angle = newAngle;
+	}
+	float GetAngle()
+	{
+		return angle;
+	}
 	void Draw(Drawable& drawable) const
 	{
 		drawable.Translate(-pos);
 		drawable.Scale(scale);
+		drawable.Rotate(angle);
 		ct.Draw(drawable);
 	}
 private:
 	float scale = 1.0f;
+	float angle = 0.0f;
 	Vec2 pos = { 0.0f,0.0f };
 	CoordinateTransformer& ct;
 

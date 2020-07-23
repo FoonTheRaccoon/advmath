@@ -70,17 +70,30 @@ public:
 	_Vec2&	Rotate(T theta)
 	{
 		const T x_tmp = x;
-		const T sintheta = sin(theta);
 		const T costheta = cos(theta);
+		const T sintheta = sin(theta);
 
 		x = x * costheta - y * sintheta;
 		y = y * costheta + x_tmp * sintheta; 
 
 		return *this;
 	}
-	_Vec2 GetRotated(T theta) const
+	_Vec2&	Rotate(T costheta, T sintheta)
+	{
+		const T x_tmp = x;
+
+		x = x * costheta - y * sintheta;
+		y = y * costheta + x_tmp * sintheta;
+
+		return *this;
+	}
+	_Vec2	GetRotated(T theta) const
 	{
 		return _Vec2(*this).Rotate(theta);
+	}
+	_Vec2	GetRotated(T costheta, T sintheta) const
+	{
+		return _Vec2(*this).Rotate(costheta, sintheta);
 	}
 	_Vec2	operator-() const
 	{

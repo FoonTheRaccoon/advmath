@@ -97,7 +97,16 @@ void Game::UpdateModel()
 		ent.Strobe(dt);
 	}
 	
-	
+	float omega = 0.01;
+
+	if (wnd.kbd.KeyIsPressed(VK_LEFT))
+	{
+		cam.SetAngle(cam.GetAngle() + omega);
+	}
+	if (wnd.kbd.KeyIsPressed(VK_RIGHT))
+	{
+		cam.SetAngle(cam.GetAngle() - omega);
+	}
 }
 
 void Game::ComposeFrame()
