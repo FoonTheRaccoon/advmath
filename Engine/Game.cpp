@@ -29,17 +29,53 @@ Game::Game(MainWindow& wnd)
 	ct(gfx),
 	cam(ct),
 	cnt(wnd.mouse, cam),
-	bounds(Star::Make(400.0f, 400.0f, 30), Vec2(0.0f, 0.0f), Vec2(0.0f, 0.0f), 255, 255, 255, 400.0f),
-	lilBounds(Star::Make(100.0f, 100.0f, 10), Vec2(100.0f, 100.0f), Vec2(0.0f, 0.0f), 0, 255, 0, 100.0f)
+	rng(rd()),
+	xDist(-dist, dist),
+	yDist(-dist, dist),
+	inRadius(0.2f, 0.6f),
+	outRadius(50.0f, maxRad),
+	points(2, 8),
+	rgb(0, 255),
+	strobeSpeed(1.0f, 10.0f),
+	scaleFactor(0.05f, 0.95f),
+	rotSpeed(-0.1f, 0.1f)
 {
-	float rad = 30.0f;
-	bouncers.emplace_back(Star::Make(rad, rad, 10), Vec2(100.0f, 100.0f),	Vec2(5.1f, -3.8f), 255, 100, 255,	rad);
-	bouncers.emplace_back(Star::Make(rad, rad, 10), Vec2(-300.0f, 0.0f),	Vec2(10.1f, -0.8f), 255, 100, 25,	rad);
-	bouncers.emplace_back(Star::Make(rad, rad, 10), Vec2(0.0f, 0.0f),		Vec2(-5.1f, 1.8f), 90, 255, 25,		rad);
-	bouncers.emplace_back(Star::Make(rad, rad, 10), Vec2(0.0f, -300.0f),	Vec2(0.1f, -10.8f), 255, 10, 255,	rad);
-	bouncers.emplace_back(Star::Make(rad, rad, 10), Vec2(0.0f, 200.0f),		Vec2(10.1f, 1.8f), 255, 100, 25,	rad);
-	bouncers.emplace_back(Star::Make(rad, rad, 10), Vec2(300.0f, 10.0f),	Vec2(5.1f, -7.8f), 255, 10, 255,	rad);
-	bouncers.emplace_back(Star::Make(rad, rad, 10), Vec2(-10.0f, -100.0f),	Vec2(-2.1f, -.8f), 255, 10, 255,	rad);
+	stars.reserve(entNum);
+	for (int i = 0; i < entNum; ++i)
+	{
+		float xDist_tmp = 0.0f;
+		float yDist_tmp = 0.0f;
+		float inRadius_tmp = inRadius(rng);
+		float outRadius_tmp = 0.0f;
+		int points_tmp = points(rng);
+		unsigned int r = rgb(rng);
+		unsigned int g = rgb(rng);
+		unsigned int b = rgb(rng);
+		float strobeSpeed_tmp = strobeSpeed(rng);
+		float scaleFactor_tmp = scaleFactor(rng);
+		float rotSpeed_tmp = rotSpeed(rng);
+		bool placeable = true;
+
+		do
+		{
+			placeable = true;
+			xDist_tmp = xDist(rng);
+			yDist_tmp = yDist(rng);
+			outRadius_tmp = outRadius(rng);
+			for (const auto& ent : stars)
+			{
+				float xdiff = ent.GetPos().x - xDist_tmp;
+				float ydiff = ent.GetPos().y - yDist_tmp;
+				float distance = sqrt(xdiff * xdiff + ydiff * ydiff);
+				if (distance < (ent.GetMaxPntFromCenter_Radius() + outRadius_tmp))
+				{
+					placeable = false;
+				}
+			}
+		} while (!placeable);
+		stars.emplace_back(Star::Make(inRadius_tmp * outRadius_tmp, outRadius_tmp, points_tmp), Vec2(xDist_tmp, yDist_tmp), Vec2(0.0f, 0.0f), r, g, b, outRadius_tmp, strobeSpeed_tmp, scaleFactor_tmp, rotSpeed_tmp);
+	}
+
 }
 
 void Game::Go()
@@ -54,100 +90,21 @@ void Game::UpdateModel()
 {
 	float dt = ft.Mark();
 
-	static Vec2 dir;
-	const float speed = 2.0f;
-	const float scaleFac = 1.01f;
-
-	if (wnd.kbd.KeyIsPressed(VK_UP))
-	{
-		dir = { 0.0f, speed };
-		lilBounds.TranslateBy(dir);
-	}
-	if (wnd.kbd.KeyIsPressed(VK_DOWN))
-	{
-		dir = { 0.0f, -speed };
-		lilBounds.TranslateBy(dir);
-	}
-	if (wnd.kbd.KeyIsPressed(VK_LEFT))
-	{
-		dir = { -speed, 0.0f};
-		lilBounds.TranslateBy(dir);
-	}
-	if (wnd.kbd.KeyIsPressed(VK_RIGHT))
-	{
-		dir = { speed, 0.0f };
-		lilBounds.TranslateBy(dir);
-	}
-
-
-	if (wnd.kbd.KeyIsPressed(VK_F1))
-	{
-		lilBounds.SetScale(lilBounds.GetScale() / scaleFac);
-	}
-	else if (wnd.kbd.KeyIsPressed(VK_F2))
-	{
-		lilBounds.SetScale(lilBounds.GetScale() * scaleFac);
-	}
-
-	
-	if (wnd.kbd.KeyIsPressed(VK_NUMPAD0))
-	{
-		bounds.SetScale(bounds.GetScale() / scaleFac);
-	}
-	else if (wnd.kbd.KeyIsPressed(VK_NUMPAD1))
-	{
-		bounds.SetScale(bounds.GetScale() * scaleFac);
-	}
-
-	if (wnd.kbd.KeyIsPressed(VK_NUMPAD8))
-	{
-		dir = { 0.0f, speed };
-		bounds.TranslateBy(dir);
-	}
-	if (wnd.kbd.KeyIsPressed(VK_NUMPAD5))
-	{
-		dir = { 0.0f, -speed };
-		bounds.TranslateBy(dir);
-	}
-	if (wnd.kbd.KeyIsPressed(VK_NUMPAD4))
-	{
-		dir = { -speed, 0.0f };
-		bounds.TranslateBy(dir);
-	}
-	if (wnd.kbd.KeyIsPressed(VK_NUMPAD6))
-	{
-		dir = { speed, 0.0f };
-		bounds.TranslateBy(dir);
-	}
-
 	cnt.Update();
-	for (auto& ent : bouncers)
+
+	for (auto& ent : stars)
 	{
-		ent.UpdatePos();
+		ent.Strobe(dt);
 	}
 	
-	for (auto& ent : bouncers)
-	{
-		phy.Update(bounds, ent);
-	}
-	for (auto& ent : bouncers)
-	{
-		phy.Update(lilBounds, ent);
-	}
+	
 }
 
 void Game::ComposeFrame()
 {
-	//for(const auto& ent : stars)
-	//	if (ent.GetPos().DistFromOtherVec2(cam.GetPos()) < gfx.ScreenLengthFromCenter / cam.GetScale() + ent.GetRadius())
-	//		cam.Draw( ent.GetDrawable());
-
-	cam.Draw(bounds.GetDrawable());
-	cam.Draw(lilBounds.GetDrawable());
-	for (auto& ent : bouncers)
-	{
-		cam.Draw(ent.GetDrawable());
-	}
+	for(const auto& ent : stars)
+		if (ent.GetPos().DistFromOtherVec2(cam.GetPos()) < gfx.ScreenLengthFromCenter / cam.GetScale() + ent.GetMaxPntFromCenter_Radius())
+			cam.Draw( ent.GetDrawable());
 }
 
 //Random StarField Generation
@@ -203,4 +160,104 @@ void Game::ComposeFrame()
 //		stars.emplace_back(Star::Make(inRadius_tmp * outRadius_tmp, outRadius_tmp, points_tmp), Vec2(xDist_tmp, yDist_tmp), r, g, b, outRadius_tmp, strobeSpeed_tmp, scaleFactor_tmp);
 //	}
 //
+//}
+
+
+
+//Physics
+//void Game::UpdateModel()
+//{
+//	float dt = ft.Mark();
+//
+//	static Vec2 dir;
+//	const float speed = 2.0f;
+//	const float scaleFac = 1.01f;
+//	const float rotation = 0.1f;
+//
+//	if (wnd.kbd.KeyIsPressed(VK_UP))
+//	{
+//		dir = { 0.0f, speed };
+//		lilBounds.TranslateBy(dir);
+//	}
+//	if (wnd.kbd.KeyIsPressed(VK_DOWN))
+//	{
+//		dir = { 0.0f, -speed };
+//		lilBounds.TranslateBy(dir);
+//	}
+//	if (wnd.kbd.KeyIsPressed(VK_LEFT))
+//	{
+//		dir = { -speed, 0.0f };
+//		lilBounds.TranslateBy(dir);
+//	}
+//	if (wnd.kbd.KeyIsPressed(VK_RIGHT))
+//	{
+//		dir = { speed, 0.0f };
+//		lilBounds.TranslateBy(dir);
+//	}
+//
+//
+//	if (wnd.kbd.KeyIsPressed(VK_F1))
+//	{
+//		lilBounds.SetScale(lilBounds.GetScale() / scaleFac);
+//	}
+//	else if (wnd.kbd.KeyIsPressed(VK_F2))
+//	{
+//		lilBounds.SetScale(lilBounds.GetScale() * scaleFac);
+//	}
+//
+//
+//	if (wnd.kbd.KeyIsPressed(VK_NUMPAD0))
+//	{
+//		bounds.SetScale(bounds.GetScale() / scaleFac);
+//	}
+//	else if (wnd.kbd.KeyIsPressed(VK_NUMPAD1))
+//	{
+//		bounds.SetScale(bounds.GetScale() * scaleFac);
+//	}
+//
+//	if (wnd.kbd.KeyIsPressed(VK_NUMPAD8))
+//	{
+//		dir = { 0.0f, speed };
+//		bounds.TranslateBy(dir);
+//	}
+//	if (wnd.kbd.KeyIsPressed(VK_NUMPAD5))
+//	{
+//		dir = { 0.0f, -speed };
+//		bounds.TranslateBy(dir);
+//	}
+//	if (wnd.kbd.KeyIsPressed(VK_NUMPAD4))
+//	{
+//		dir = { -speed, 0.0f };
+//		bounds.TranslateBy(dir);
+//	}
+//	if (wnd.kbd.KeyIsPressed(VK_NUMPAD6))
+//	{
+//		dir = { speed, 0.0f };
+//		bounds.TranslateBy(dir);
+//	}
+//
+//	if (wnd.kbd.KeyIsPressed(VK_NUMPAD7))
+//	{
+//		bounds.SetRotation(bounds.GetRotation() + rotation);
+//	}
+//	else if (wnd.kbd.KeyIsPressed(VK_NUMPAD9))
+//	{
+//		bounds.SetRotation(bounds.GetRotation() - rotation);
+//	}
+//
+//	cnt.Update();
+//
+//	for (auto& ent : bouncers)
+//	{
+//		ent.UpdatePos();
+//	}
+//
+//	for (auto& ent : bouncers)
+//	{
+//		phy.Update(bounds, ent);
+//	}
+//	for (auto& ent : bouncers)
+//	{
+//		phy.Update(lilBounds, ent);
+//	}
 //}

@@ -67,6 +67,21 @@ public:
 		norm.Normalize();
 		return norm;
 	}
+	_Vec2&	Rotate(T theta)
+	{
+		const T x_tmp = x;
+		const T sintheta = sin(theta);
+		const T costheta = cos(theta);
+
+		x = x * costheta - y * sintheta;
+		y = y * costheta + x_tmp * sintheta; 
+
+		return *this;
+	}
+	_Vec2 GetRotated(T theta) const
+	{
+		return _Vec2(*this).Rotate(theta);
+	}
 	_Vec2	operator-() const
 	{
 		return _Vec2( -x,-y );

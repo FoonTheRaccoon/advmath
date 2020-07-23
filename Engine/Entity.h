@@ -30,6 +30,14 @@ public:
 	{
 		return scale;
 	}
+	void SetAngle(const float& newAngle)
+	{
+		angle = newAngle;
+	}
+	float GetAngle()
+	{
+		return angle;
+	}
 	const Vec2& GetVelocity() const
 	{
 		return vel;
@@ -64,6 +72,7 @@ public:
 	Drawable GetDrawable() const
 	{
 		Drawable d(model, Colors::MakeRGB(r,g,b));
+		d.Rotate(angle);
 		d.Scale(scale);
 		d.Translate(pos);
 		return d;
@@ -77,6 +86,7 @@ private:
 	Vec2 vel = { 0.0f, 0.0f };
 	std::vector<Vec2> model;
 	float scale = 1.0f;
+	float angle = 0.0f;
 	float radius = 1.0f;
 	bool collidable = true;
 public:

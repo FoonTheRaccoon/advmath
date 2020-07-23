@@ -378,10 +378,11 @@ void Graphics::DrawClosedPolyline( const std::vector<Vec2>& verts, Color c )
 	DrawLine( verts.back(),verts.front(),c );
 }
 
-void Graphics::DrawClosedPolyline(const std::vector<Vec2>& verts, const Vec2& translation_in, float scale_x_in, float scale_y_in, Color c)
+void Graphics::DrawClosedPolyline(const std::vector<Vec2>& verts, const Vec2& translation_in, float scale_x_in, float scale_y_in, float angle_in, Color c)
 {
 	const auto transformer = [&](Vec2 v) 
 	{
+		v.Rotate(angle_in);
 		v.x *= scale_x_in;
 		v.y *= scale_y_in;
 		v += translation_in;

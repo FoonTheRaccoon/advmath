@@ -60,15 +60,13 @@ private:
 	std::uniform_int_distribution<int> rgb;
 	std::uniform_real_distribution<float> strobeSpeed;
 	std::uniform_real_distribution<float> scaleFactor;
+	std::uniform_real_distribution<float> rotSpeed;
 	MainWindow& wnd;
 	Graphics gfx;
 	CoordinateTransformer ct;
 	Camera cam;
 	MouseCameraController cnt;
-	Physics phy;
-	Star bounds;
-	Star lilBounds;
-	std::vector<Star> bouncers;
+	std::vector<Star> stars;
 	/********************************/
 	/*  User Variables              */
 	/********************************/

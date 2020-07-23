@@ -7,10 +7,11 @@
 class Strober
 {
 public:
-	Strober(unsigned int r = 0, unsigned int g = 0, unsigned int b = 0, float strobeSpeed = 1.0f, float scaleFactor = 1.0f)
+	Strober(unsigned int r = 0, unsigned int g = 0, unsigned int b = 0, float strobeSpeed = 1.0f, float scaleFactor = 1.0f, float spinFactor = 0.0f)
 		: init_r(r), init_g(g), init_b(b),
 		strobeSpeed(strobeSpeed),
-		scaleFactor(scaleFactor)
+		scaleFactor(scaleFactor),
+		spinFactor(spinFactor)
 	{}
 	void Strobe(float dt, Entity& entity)
 	{
@@ -28,12 +29,15 @@ public:
 
 		float scale_tmp = scale_swing * sin(time * strobeSpeed) + (1.0f - scale_swing);
 		entity.SetScale(scale_tmp);
+
+		entity.SetAngle(entity.GetAngle() + spinFactor);
 	}
 private:
 	static constexpr float maxTime = std::numeric_limits<float>::max();
 	float time = 0.0f;
 	float strobeSpeed = 1.0f;
 	float scaleFactor = 1.0f;
+	float spinFactor = 0.0f;
 	unsigned int init_r = 0;
 	unsigned int init_g = 0;
 	unsigned int init_b = 0;

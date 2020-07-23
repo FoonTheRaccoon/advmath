@@ -133,9 +133,11 @@ private:
 	}
 	void TransformPoints(Vec2& p1, Vec2& p2, Entity& static_ent)
 	{
+		p1.Rotate(static_ent.GetAngle());
 		p1 *= static_ent.GetScale();
 		p1 += static_ent.GetPos();
 
+		p2.Rotate(static_ent.GetAngle());
 		p2 *= static_ent.GetScale();
 		p2 += static_ent.GetPos();
 	}
