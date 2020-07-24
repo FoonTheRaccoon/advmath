@@ -72,9 +72,11 @@ public:
 	Drawable GetDrawable() const
 	{
 		Drawable d(model, Colors::MakeRGB(r,g,b));
-		d.Rotate(angle);
-		d.Scale(scale);
-		d.Translate(pos);
+		d.ApplyTransformation(
+			Mat3::Translation(pos.x, pos.y) *
+			Mat3::Scale(scale) *
+			Mat3::Rotate(angle)
+			);
 		return d;
 	}
 	std::vector<Vec2>& GetModelRef()

@@ -162,6 +162,7 @@
     <ClInclude Include="Star.h" />
     <ClInclude Include="Strober.h" />
     <ClInclude Include="Vec2.h" />
+    <ClInclude Include="Vec3.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="COMInitializer.cpp" />

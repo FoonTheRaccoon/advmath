@@ -9,38 +9,17 @@ public:
 	Drawable(const std::vector<Vec2>& model, Color c = Colors::White)
 		: model(&model), c(c)
 	{}
-	void Translate(const Vec2& trans_in)
+	void ApplyTransformation(const Mat3& transformation_in)
 	{
-		translation += trans_in;
-	}
-	void Scale(float scale_in)
-	{
-		scale_x *= scale_in;
-		scale_y *= scale_in;
-		translation *= scale_in;
-	}
-	void Rotate(float angle_in)
-	{
-		angle += angle_in;
-		translation.Rotate(angle_in);
-	}
-	void ScaleIndependent(float scale_in_x, float scale_in_y)
-	{
-		scale_x *= scale_in_x;
-		scale_y *= scale_in_y;
-		translation.x *= scale_in_x;
-		translation.y *= scale_in_y;
+		transformation = transformation_in * transformation;
 	}
 	void Render(Graphics& gfx) const
 	{
 		
-		gfx.DrawClosedPolyline(*model, translation, scale_x, scale_y, angle, c);
+		gfx.DrawClosedPolyline(*model, transformation, c);
 	}
 private:
 	Color c;
 	const std::vector<Vec2>* model;
-	Vec2 translation = { 0.0f,0.0f };
-	float scale_x = 1.0f;
-	float scale_y = 1.0f;
-	float angle = 0.0f;
+	Mat3 transformation = Mat3::Identity();
 };
